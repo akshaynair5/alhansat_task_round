@@ -11,9 +11,14 @@ function Board(){
     const [newCardName,setNewCardName] = useState('')
     const [cards,setCards] = useState([])
     const [vis,setVis] = useState(false)
+    const [optView,setOptView] = useState(false)
+    const [editMess,setEditMess] = useState(false)
     const [data,setData] = useState([])
     const [newMessage,setNewMessage] = useState('')
     const [addMessVis,setMV] = useState(false)
+    const [currCardNo,setCCN] = useState()
+    const [currMessNo,setCMN] = useState()
+    const [updatedMessage,setUpdatedMessage] = useState('')
     const userDataRef = collection(db,'userData')
 
     useEffect(()=>{
@@ -48,15 +53,20 @@ function Board(){
     const updateChanges = async()=>{
         let temp = currentBoard
         let boards = data.boards;
-        for(let i=0;i<boards.length;i++){
-            if(boards[i].id == currentBoard.id){
-                boards[i] = temp;
-                break;
+        if(boards && currentBoard){
+            for(let i=0;i<boards.length;i++){
+                if(boards[i].id == currentBoard.id){
+                    boards[i] = temp;
+                    break;
+                }
             }
+            await updateDoc(doc(db, "userData", currentUser.uid), {
+                "boards" : boards
+            }).then(()=>{
+                setCCN('')
+                setCMN('')
+            })
         }
-        await updateDoc(doc(db, "userData", currentUser.uid), {
-            "boards" : boards
-        })
     }
     const handleAddCard1=()=>{
         setVis('visible')
@@ -64,7 +74,8 @@ function Board(){
     const HandleSubmit = async()=>{
         let temp = currentBoard.cards
         let temp2 = currentBoard
-        temp = [...temp,{CardTitle:`${newCardName}`,messages:[]}]
+        const id = Math.floor(Date.now() / 1000);
+        temp = [...temp,{CardTitle:`${newCardName}`,messages:[],cardID:'C'+`${id}`}]
         temp2.cards = temp
         let boards = data.boards;
         for(let i=0;i<boards.length;i++){
@@ -78,12 +89,22 @@ function Board(){
             "boards" : boards
         })
         setVis(false)
-        setCurrentBoard(temp)
+        setCurrentBoard(temp2)
+        setCards(temp)
     }
 
+    const addMessInitiator = (card)=>{
+        setMV(true)
+        setCCN(card.cardID)
+    }
+    const editMessInitiator = (messID) =>{
+        setCCN(messID)
+        setEditMess(true)
+    }
     const handleAddMessage = (card) =>{
         let messCur = card.messages;
-        messCur = [...messCur,newMessage];
+        const id = Math.floor(Date.now() / 1000);
+        messCur = [...messCur,{message:newMessage,messID:'M'+`${id}`}];
         let temp = cards;
         for(let i=0;i<temp.length;i++){
             if(temp[i].CardTitle == card.CardTitle){
@@ -91,10 +112,65 @@ function Board(){
                 break;
             }
         }
-        setCards(temp)
         setMV(false)
+        setCCN()
+        setCards(temp)
 
     }
+
+    // useEffect(()=>{
+    //     console.log(updatedMessage)
+    // },updatedMessage)
+
+    const HandleEdit = (message,card) =>{
+        let m = message
+        let c = card;
+        m.message = updatedMessage;
+        for(let i=0;i<c.messages.length;i++){
+            if(c.messages[i].messID == m.messID){
+                c.messages[i] = m;
+            }
+        }
+        let temp = cards
+        for(let i=0;i<temp.length;i++){
+            if(temp[i].cardID == c.cardID){
+                temp[i] = c;
+            }
+        }
+        setCards(temp);
+        setEditMess(false)
+        setCMN();
+    }
+    const handleMoveMess = (message,c,card) =>{
+        let newC = c;
+        let old = card;
+        for(let i=0;i<old.messages.length;i++){
+            if(old.messages[i].messID == message.messID){
+                old.messages.splice(i,1);
+            }
+        }
+        let newCMessages = newC.messages
+        newCMessages = [...newCMessages,message];
+        newC.messages = newCMessages;
+
+        let AllCards = cards;
+        for(let i=0;i<AllCards.length;i++){
+            if(AllCards[i].cardID == newC.cardID){
+                AllCards[i] = newC
+            }
+            else if(AllCards[i].cardID == old.cardID){
+                AllCards[i] = old
+            }
+        }
+        setCards(AllCards)
+        setOptView(false)
+        setCMN()
+    }
+    const optViewInitial = (messID) =>{
+        setOptView(true)
+        setCMN(messID)
+    }
+
     return(
         <div className="board">
             <p className='heading'>{currentBoard.boardName}</p>
@@ -123,14 +199,55 @@ function Board(){
                             <div className='card'>
                                 <p className='cardHeading'>{card.CardTitle}</p>
                                 {messages && 
-                                    messages.map((message)=>(
-                                        <p>{message}</p>
-                                    ))
+                                    messages.map((message)=>{
+                                        return(
+                                            <>
+                                                {
+                                                    (currMessNo != message.messID || !editMess) &&
+                                                    <div className='message'>
+                                                        <p onClick={()=>{optViewInitial(message.messID)}}>{message.message}</p>
+                                                        {
+                                                            optView && currMessNo == message.messID &&
+                                                            <div className='options'>
+                                                                    <p>Move to:</p>
+                                                                    {
+                                                                        cards.map((c)=>{
+                                                                            return(
+                                                                                <>
+                                                                                    {
+                                                                                        c != card && 
+                                                                                        <p onClick={()=>{handleMoveMess(message,c,card)}} className='cardsList'>{c.CardTitle}</p>
+                                                                                    }
+                                                                                </>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                            </div>
+                                                        }
+                                                        <button className='editMess' onClick={()=>{editMessInitiator(message.messID)}}></button>
+                                                    </div>
+                                                }
+                                                {
+                                                        currMessNo == message.messID && editMess &&
+                                                        <div className='message'>
+                                                            <input onChange={(e)=>{setUpdatedMessage(e.target.value)}}   
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === 'Enter') {
+                                                                        HandleEdit(message,card)
+                                                                    }
+                                                                }} 
+                                                                placeholder='Message Title' type='text'>
+                                                            </input>
+                                                        </div>
+                                                }
+                                            </>
+                                        )
+                                    })
                                 }
-                                {!addMessVis &&
-                                    <button className='addMessage' onClick={()=>{setMV(true)}}>Add message</button>
+                                {!addMessVis && currCardNo != card.cardID &&
+                                    <button className='addMessage' onClick={()=>{addMessInitiator(card)}}>Add message</button>
                                 }
-                                {addMessVis && 
+                                {addMessVis && currCardNo == card.cardID &&
                                     <input onChange={(e)=>{setNewMessage(e.target.value)}}   
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {

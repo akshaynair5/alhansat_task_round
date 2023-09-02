@@ -21,6 +21,9 @@ export const AuthcontextProvider =({children})=>{
             unsub();
         }
     },[]);
+    useEffect(()=>{
+        localStorage.setItem('currentBoard', JSON.stringify(currentBoard));
+    },[currentBoard])
     return(
         <Authcontext.Provider value={{currentUser,currentBoard,setCurrentBoard}}>
             {children}
