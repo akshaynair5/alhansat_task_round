@@ -24,7 +24,8 @@ function Board(){
     useEffect(()=>{
         setCards(currentBoard.cards)
         localStorage.setItem('currentBoard', JSON.stringify(currentBoard));
-        updateChanges()
+        updateChanges();
+
     },[currentBoard])
     useEffect(()=>{
         let temp = currentBoard
@@ -50,7 +51,7 @@ function Board(){
         fetchUserChaps()
       },[])
 
-    const updateChanges = async()=>{
+    const updateChanges = async ()=>{
         let temp = currentBoard
         let boards = data.boards;
         if(boards && currentBoard){
@@ -98,7 +99,7 @@ function Board(){
         setCCN(card.cardID)
     }
     const editMessInitiator = (messID) =>{
-        setCCN(messID)
+        setCMN(messID)
         setEditMess(true)
     }
     const handleAddMessage = (card) =>{
@@ -115,7 +116,6 @@ function Board(){
         setMV(false)
         setCCN()
         setCards(temp)
-
     }
 
     // useEffect(()=>{
@@ -170,11 +170,21 @@ function Board(){
         setOptView(true)
         setCMN(messID)
     }
+    // const removePopUps = ()=>{
+    //     if(vis || optView || editMess || addMessVis){
+    //         setVis(false)
+    //         setOptView(false)
+    //         setEditMess(false)
+    //         setMV(false)
+    //         setCCN()
+    //         setCMN()
+    //     }
+    // }
 
     return(
         <div className="board">
             <p className='heading'>{currentBoard.boardName}</p>
-            <div className='cards'>
+            <div className='cards' >
                 {
                     !vis && 
                     <button onClick={()=>{handleAddCard1()}} className='addCard'>Add new Card +</button>
@@ -224,7 +234,7 @@ function Board(){
                                                                     }
                                                             </div>
                                                         }
-                                                        <button className='editMess' onClick={()=>{editMessInitiator(message.messID)}}></button>
+                                                        <button className='editMess' onClick={()=>{editMessInitiator(message.messID)}}>✎</button>
                                                     </div>
                                                 }
                                                 {
@@ -236,7 +246,7 @@ function Board(){
                                                                         HandleEdit(message,card)
                                                                     }
                                                                 }} 
-                                                                placeholder='Message Title' type='text'>
+                                                                placeholder={`${message.message}`} type='text'>
                                                             </input>
                                                         </div>
                                                 }
@@ -244,8 +254,8 @@ function Board(){
                                         )
                                     })
                                 }
-                                {!addMessVis && currCardNo != card.cardID &&
-                                    <button className='addMessage' onClick={()=>{addMessInitiator(card)}}>Add message</button>
+                                {(!addMessVis || currCardNo != card.cardID) &&
+                                    <button className='addMessage' onClick={()=>{addMessInitiator(card)}}>Add message +</button>
                                 }
                                 {addMessVis && currCardNo == card.cardID &&
                                     <input onChange={(e)=>{setNewMessage(e.target.value)}}   

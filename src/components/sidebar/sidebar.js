@@ -6,7 +6,7 @@ import { getDocs, doc } from "firebase/firestore";
 import { Authcontext } from '../../contextProvider';
 
 function Sidebar (){
-    const [popUpVis,setPUV] = useState('hidden');
+    const [addBoard,setAB] = useState(false);
     const [newBoardName,setBN] = useState('')
     const userDataRef = collection(db,'userData')
     const [userBoards,setBoards] = useState([])
@@ -34,7 +34,7 @@ function Sidebar (){
         fetchUserChaps()
       },[])
     const handleAdd1 = () =>{
-        setPUV('visible')
+        setAB(true)
     }
     const handleAdd2= async() =>{
         const id = userBoards.length;
@@ -49,7 +49,7 @@ function Sidebar (){
             "boards" : temp
         })
         setBoards(temp)
-        setPUV('hidden')
+        setAB(false)
     }
     const handleBoardView = (board) =>{
         localStorage.setItem('currentBoard', JSON.stringify(board));
@@ -58,15 +58,26 @@ function Sidebar (){
 
     return(
         <div className="sidebar">
-            <div className='popUp' style={{visibility:`${popUpVis}`}} onClick={()=>{setPUV('hidden')}}>
+            {/* <div className='popUp' style={{visibility:`${popUpVis}`}} onClick={()=>{setPUV('hidden')}}>
                 <div className='content'>
                     <input className='cardTitle' placeholder='List Title (Eg: To Do, Doing etc..)' onChange={(e)=>{setBN(e.target.value)}}></input>
                     <button className='done' onClick={()=>{handleAdd2()}}>Create</button>
                 </div>
-            </div>
+            </div> */}
             <p className='heading'>Your Boards</p>
-            <button className='Add' onClick={()=>{handleAdd1()}}>+</button>
+            <button className='Add' onClick={()=>{handleAdd1()}}>Add new board +</button>
             <div className='boards'>
+                {
+                    addBoard && 
+                    <input onChange={(e)=>{setBN(e.target.value)}}   
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleAdd2();
+                            }
+                        }} 
+                        placeholder='Card Title' type='text'>
+                    </input>
+                }
                 { 
                     userBoards.map((board)=>(
                             <>

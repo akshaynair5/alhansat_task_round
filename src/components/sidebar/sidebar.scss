@@ -1,5 +1,5 @@
 .sidebar{
-    background-color: rgb(60, 60, 60);
+    background-color:#1e1e24d6;
     width: 15vw;
     height: 92vh;
     position: fixed;
@@ -14,15 +14,16 @@
         text-align: center;
     }
     .Add{
-        width: 50%;
-        margin-left: 25%;
+        width: 100%;
+        border: none;
+        text-align: left;
+        padding-left: 10%;
         height: 8%;
-        font-size: 5vh;
+        font-size: 2vh;
+        font-weight: 200;
         border-color: black;
-        border-radius: 20px;
         background-color: transparent;
         color: aliceblue;
-        border-style: solid;
         cursor: pointer;
     }
     .boards{
@@ -30,6 +31,21 @@
         text-align: center;
         margin-top: 5%;
 
+        input{
+            background-color: transparent;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            height: 100%;
+            width: 13vw;
+            margin-top: 5%;
+            padding-bottom: 3%;
+            color: aliceblue;
+            // height: 200px;
+        }
+        input:focus {
+            outline: none; /* Remove the default focus outline */
+        }
         .curBoard{
             width: 90%;
             margin: 0%;
@@ -44,7 +60,7 @@
             padding-left: 6%;
             margin: 0%;
             padding: 5%;
-            background-color: rgba(0, 0, 0, 0.97);
+            // background-color: rgba(0, 0, 0, 0.97);
         }
     }
 
