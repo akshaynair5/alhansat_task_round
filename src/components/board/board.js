@@ -23,6 +23,12 @@ function Board(){
     const [updatedMessage,setUpdatedMessage] = useState('')
     const userDataRef = collection(db,'userData')
 
+
+
+    const [dummy,setDummy] = useState(0)
+    const [currDrag,setCD] = useState()
+    const [currEnter,setCE] = useState()
+
     useEffect(()=>{
         setCards(currentBoard.cards)
         setDefaultBoard(false)
@@ -91,6 +97,7 @@ function Board(){
                 setCMN('')
             })
         }
+        setCurrentBoard(temp2)
     }
 
 
@@ -206,6 +213,38 @@ function Board(){
     }
 
 
+    useEffect(()=>{
+        if(dummy){
+            setDummy(false)
+        }
+        else{
+            setDummy(true)
+        }
+    },[cards])
+    const onDragStart = (cardD,cardL) =>{
+        setCD(cardD)
+    }
+    const onDragEnter = (cardE) =>{
+        setCE(cardE)
+    }
+    const onDragStop = () =>{
+        // console.log(currDrag)
+        // console.log(currEnter)
+        let temp = cards
+        for(let i=0;i<cards.length;i++){
+            if(temp[i] == currDrag){
+                temp[i] = currEnter
+                // setCards(temp)
+            }
+            else if(temp[i] == currEnter){
+                temp[i] = currDrag
+                // setCards(temp)
+            }
+        }
+        updateChanges(temp)
+        setDummy((dummy)=> dummy + 1)
+    }
+
     return(
         <div className="board">
             {
@@ -234,7 +273,7 @@ function Board(){
                             cards.map((card)=>{
                                 let messages = card.messages;
                                 return(
-                                    <div className='card'>
+                                    <div className='card' draggable  onDragEnter={()=>onDragEnter(card)}  onDragStart={()=>{onDragStart(card)}}  onDragEnd={()=>{onDragStop(card)}}>
                                         <div className='cardHeading'>
                                             <p>{card.CardTitle}</p>
                                             {/* <button className='edit'>✎</button> */}
