@@ -4,10 +4,12 @@ import { Authcontext } from '../../contextProvider'
 import { db } from '../../firebaseconfig';
 import { collection, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { getDocs, doc } from "firebase/firestore";
+import icon from '../../images/icon1.jpg'
 
 function Board(){
     const {currentUser} = useContext(Authcontext)
     const {currentBoard,setCurrentBoard} = useContext(Authcontext)
+    const [defaultBoard,setDefaultBoard] = useState(false)
     const [newCardName,setNewCardName] = useState('')
     const [cards,setCards] = useState([])
     const [vis,setVis] = useState(false)
@@ -23,16 +25,15 @@ function Board(){
 
     useEffect(()=>{
         setCards(currentBoard.cards)
-        localStorage.setItem('currentBoard', JSON.stringify(currentBoard));
-        updateChanges();
-
+        setDefaultBoard(false)
     },[currentBoard])
-    useEffect(()=>{
-        let temp = currentBoard
-        temp.cards = cards
-        setCurrentBoard(temp)
-        console.log(cards)
-    },[cards])
+    // useEffect(()=>{
+    //     let temp = currentBoard
+    //     temp.cards = cards
+    //     setCurrentBoard(temp)
+    //     console.log(cards)
+    // },[cards])
+
     useEffect(()=>{
         const fetchUserChaps =async()=>{
           const q1 = query(userDataRef,where('uid','==',`${currentUser.uid}`))
@@ -43,6 +44,12 @@ function Board(){
                   temp1.push(doc.data())
               })
               setData(temp1[0])
+              if(temp1[0].boards[0]){
+                setCurrentBoard(temp1[0].boards[0])
+              }
+              else{
+                setDefaultBoard(true)
+              }
               console.log(temp1)
           } catch (err) {
               console.log(err)
@@ -51,13 +58,29 @@ function Board(){
         fetchUserChaps()
       },[])
 
-    const updateChanges = async ()=>{
-        let temp = currentBoard
+
+
+    const cardDelete = (c) =>{
+        let temp = cards;
+        for(let i=0;i<temp.length;i++){
+            if(temp[i].cardID == c.cardID){
+                temp.splice(i,1);
+            }
+        }
+        updateChanges(temp);
+        setCards(temp)
+    }
+
+
+    
+    const updateChanges = async (temp)=>{
+        let temp2 = currentBoard
+        temp2.cards = temp;
         let boards = data.boards;
         if(boards && currentBoard){
             for(let i=0;i<boards.length;i++){
                 if(boards[i].id == currentBoard.id){
-                    boards[i] = temp;
+                    boards[i] = temp2;
                     break;
                 }
             }
@@ -69,6 +92,10 @@ function Board(){
             })
         }
     }
+
+
+
+
     const handleAddCard1=()=>{
         setVis('visible')
     }
@@ -94,13 +121,11 @@ function Board(){
         setCards(temp)
     }
 
+
+
     const addMessInitiator = (card)=>{
         setMV(true)
         setCCN(card.cardID)
-    }
-    const editMessInitiator = (messID) =>{
-        setCMN(messID)
-        setEditMess(true)
     }
     const handleAddMessage = (card) =>{
         let messCur = card.messages;
@@ -116,12 +141,15 @@ function Board(){
         setMV(false)
         setCCN()
         setCards(temp)
+        updateChanges(temp)
     }
 
-    // useEffect(()=>{
-    //     console.log(updatedMessage)
-    // },updatedMessage)
 
+
+    const editMessInitiator = (messID) =>{
+        setCMN(messID)
+        setEditMess(true)
+    }
     const HandleEdit = (message,card) =>{
         let m = message
         let c = card;
@@ -137,9 +165,18 @@ function Board(){
                 temp[i] = c;
             }
         }
+        updateChanges(temp)
         setCards(temp);
         setEditMess(false)
         setCMN();
+    }
+
+
+
+
+    const optViewInitial = (messID) =>{
+        setOptView(true)
+        setCMN(messID)
     }
     const handleMoveMess = (message,c,card) =>{
         let newC = c;
@@ -162,116 +199,124 @@ function Board(){
                 AllCards[i] = old
             }
         }
+        updateChanges(AllCards)
         setCards(AllCards)
         setOptView(false)
         setCMN()
     }
-    const optViewInitial = (messID) =>{
-        setOptView(true)
-        setCMN(messID)
-    }
-    // const removePopUps = ()=>{
-    //     if(vis || optView || editMess || addMessVis){
-    //         setVis(false)
-    //         setOptView(false)
-    //         setEditMess(false)
-    //         setMV(false)
-    //         setCCN()
-    //         setCMN()
-    //     }
-    // }
+
 
     return(
         <div className="board">
-            <p className='heading'>{currentBoard.boardName}</p>
-            <div className='cards' >
-                {
-                    !vis && 
-                    <button onClick={()=>{handleAddCard1()}} className='addCard'>Add new Card +</button>
-                }
-                {
-                    vis && 
-                    <div className='card'>
-                        <input onChange={(e)=>{setNewCardName(e.target.value)}}   
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    HandleSubmit();
-                                }
-                            }} 
-                            placeholder='Card Title' type='text'>
-                        </input>
-                    </div>
-                }
-                {cards &&
-                    cards.map((card)=>{
-                        let messages = card.messages;
-                        return(
+            {
+                !defaultBoard && 
+                <>
+                    <p className='heading'>{currentBoard.boardName}</p>
+                    <div className='cards' >
+                        {
+                            !vis && 
+                            <button onClick={()=>{handleAddCard1()}} className='addCard'>Add new Card +</button>
+                        }
+                        {
+                            vis && 
                             <div className='card'>
-                                <p className='cardHeading'>{card.CardTitle}</p>
-                                {messages && 
-                                    messages.map((message)=>{
-                                        return(
-                                            <>
-                                                {
-                                                    (currMessNo != message.messID || !editMess) &&
-                                                    <div className='message'>
-                                                        <p onClick={()=>{optViewInitial(message.messID)}}>{message.message}</p>
+                                <input onChange={(e)=>{setNewCardName(e.target.value)}}   
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            HandleSubmit();
+                                        }
+                                    }} 
+                                    placeholder='Card Title' type='text'>
+                                </input>
+                            </div>
+                        }
+                        {cards &&
+                            cards.map((card)=>{
+                                let messages = card.messages;
+                                return(
+                                    <div className='card'>
+                                        <div className='cardHeading'>
+                                            <p>{card.CardTitle}</p>
+                                            {/* <button className='edit'>✎</button> */}
+                                            <button className='delete' onClick={()=>{cardDelete(card)}}>🗑</button>
+                                        </div>
+                                        {messages && 
+                                            messages.map((message)=>{
+                                                return(
+                                                    <>
                                                         {
-                                                            optView && currMessNo == message.messID &&
-                                                            <div className='options'>
-                                                                    <p>Move to:</p>
-                                                                    {
-                                                                        cards.map((c)=>{
-                                                                            return(
-                                                                                <>
-                                                                                    {
-                                                                                        c != card && 
-                                                                                        <p onClick={()=>{handleMoveMess(message,c,card)}} className='cardsList'>{c.CardTitle}</p>
-                                                                                    }
-                                                                                </>
-                                                                            )
-                                                                        })
-                                                                    }
+                                                            (currMessNo != message.messID || !editMess) &&
+                                                            <div className='message'>
+                                                                <p onClick={()=>{optViewInitial(message.messID)}}>{message.message}</p>
+                                                                {
+                                                                    optView && currMessNo == message.messID &&
+                                                                    <div className='options'>
+                                                                            <p>Move to:</p>
+                                                                            {
+                                                                                cards.map((c)=>{
+                                                                                    return(
+                                                                                        <>
+                                                                                            {
+                                                                                                c != card && 
+                                                                                                <p onClick={()=>{handleMoveMess(message,c,card)}} className='cardsList'>{c.CardTitle}</p>
+                                                                                            }
+                                                                                        </>
+                                                                                    )
+                                                                                })
+                                                                            }
+                                                                    </div>
+                                                                }
+                                                                <button className='editMess' onClick={()=>{editMessInitiator(message.messID)}}>✎</button>
                                                             </div>
                                                         }
-                                                        <button className='editMess' onClick={()=>{editMessInitiator(message.messID)}}>✎</button>
-                                                    </div>
-                                                }
-                                                {
-                                                        currMessNo == message.messID && editMess &&
-                                                        <div className='message'>
-                                                            <input onChange={(e)=>{setUpdatedMessage(e.target.value)}}   
-                                                                onKeyDown={(e) => {
-                                                                    if (e.key === 'Enter') {
-                                                                        HandleEdit(message,card)
-                                                                    }
-                                                                }} 
-                                                                placeholder={`${message.message}`} type='text'>
-                                                            </input>
-                                                        </div>
-                                                }
-                                            </>
-                                        )
-                                    })
-                                }
-                                {(!addMessVis || currCardNo != card.cardID) &&
-                                    <button className='addMessage' onClick={()=>{addMessInitiator(card)}}>Add message +</button>
-                                }
-                                {addMessVis && currCardNo == card.cardID &&
-                                    <input onChange={(e)=>{setNewMessage(e.target.value)}}   
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter') {
-                                                handleAddMessage(card);
-                                            }
-                                        }} 
-                                        placeholder='Message Title' type='text'>
-                                    </input>
-                                }
-                            </div>
-                        )
-                    })
-                }
-            </div>
+                                                        {
+                                                                currMessNo == message.messID && editMess &&
+                                                                <div className='message'>
+                                                                    <input onChange={(e)=>{setUpdatedMessage(e.target.value)}}   
+                                                                        onKeyDown={(e) => {
+                                                                            if (e.key === 'Enter') {
+                                                                                HandleEdit(message,card)
+                                                                            }
+                                                                        }} 
+                                                                        placeholder={`${message.message}`} type='text'>
+                                                                    </input>
+                                                                </div>
+                                                        }
+                                                    </>
+                                                )
+                                            })
+                                        }
+                                        {(!addMessVis || currCardNo != card.cardID) &&
+                                            <button className='addMessage' onClick={()=>{addMessInitiator(card)}}>Add message +</button>
+                                        }
+                                        {addMessVis && currCardNo == card.cardID &&
+                                            <input onChange={(e)=>{setNewMessage(e.target.value)}}   
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        handleAddMessage(card);
+                                                    }
+                                                }} 
+                                                placeholder='Message Title' type='text'>
+                                            </input>
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </>
+            }
+            {
+                defaultBoard &&
+                <div className='defaultBoard'>
+                    {/* <img src={icon}></img> */}
+                    <div className='content'>
+                        <p className='p1'>You currently have no boards!!!</p>
+                        <p className='p2'>Click on the 'Add new board +' button on the sidebar to plan out and manage your new objectives!!</p>
+                        {/* <button onClick={()=>{handleAddCard1()}} className='addCard'>Add new Card +</button> */}
+                    </div>  
+                </div>
+            }
         </div>
     )
 }

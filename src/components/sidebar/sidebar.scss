@@ -53,6 +53,25 @@
             padding-left: 6%;
             padding: 5%;
             background-color: rgba(0, 0, 0, 0.548);
+            cursor: pointer;
+            display: flex;
+            transition: 0.3s ease;
+
+            p{
+                width: 80%;
+            }
+            .btn{
+                background-color: transparent;
+                border: none;
+                font-size: 25px;
+                width: 5%;
+                margin-left: 5%;
+                cursor: pointer;
+                color: aliceblue;
+            }
+        }
+        .curBoard:hover{
+            background-color: rgba(0, 0, 0, 0.748);
         }
         .notCurBoard{
             width: 90%;
@@ -60,7 +79,11 @@
             padding-left: 6%;
             margin: 0%;
             padding: 5%;
+            cursor: pointer;
             // background-color: rgba(0, 0, 0, 0.97);
+        }
+        .notCurBoard:hover{
+            background-color: rgba(0, 0, 0, 0.348);
         }
     }
 

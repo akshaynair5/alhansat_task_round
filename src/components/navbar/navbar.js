@@ -10,11 +10,14 @@ function Navbar(){
 
     return(
         <div className="navbar">
-            <Link to='home' className="btns">Home</Link>
+            <div className="btns">
+                <button className="btn"><Link to='home' style={{color:'aliceblue',textDecoration:'none'}}>Home</Link></button>
+                <button onClick={()=>signOut(auth)} className="btn">Logout</button>
+            </div>
 
             <div className="info">
                 <p>{currentUser.displayName}</p>
-                <img src={currentUser.photoURL} onClick={()=>signOut(auth)}></img>
+                <img src={currentUser.photoURL} ></img>
             </div>
             
         </div>

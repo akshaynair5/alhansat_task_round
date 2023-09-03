@@ -7,12 +7,29 @@
     .btns{
         text-decoration: none;
         color: aliceblue;
+        display: flex;
+        width: 30%;
+        height: 5vh;
+        margin-top: 1.5vh;
+        margin-left: 5vh;
+
+        .btn{
+            text-decoration: none;
+            margin-left: 5vh;
+            background-color: transparent;
+            border: none;
+            color:red;
+            cursor: pointer;
+            padding: 2%;
+            font-size: 2.5vh;
+            font-weight: 600;
+        }
     }
     .info{
         display: flex;
         height: 100%;
         width: 15%;
-        margin-left: 85%;
+        margin-left: 65%;
         color: aliceblue;
 
         img{

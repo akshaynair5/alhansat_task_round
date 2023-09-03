@@ -13,17 +13,10 @@ export const AuthcontextProvider =({children})=>{
         const unsub = onAuthStateChanged(auth,(user)=>{
             setCurrentUser(user)
         })
-        let board = JSON.parse(localStorage.getItem('currentBoard'));
-        if(board){
-            setCurrentBoard(board)
-        }
         return ()=>{
             unsub();
         }
     },[]);
-    useEffect(()=>{
-        localStorage.setItem('currentBoard', JSON.stringify(currentBoard));
-    },[currentBoard])
     return(
         <Authcontext.Provider value={{currentUser,currentBoard,setCurrentBoard}}>
             {children}

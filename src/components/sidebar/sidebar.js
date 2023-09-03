@@ -13,9 +13,9 @@ function Sidebar (){
     const {currentUser} = useContext(Authcontext)
     const {currentBoard,setCurrentBoard} = useContext(Authcontext)
 
-    useEffect(()=>{
-        console.log(userBoards)
-    },[userBoards])
+    // useEffect(()=>{
+    //     console.log(userBoards)
+    // },[userBoards])
     useEffect(()=>{
         const fetchUserChaps =async()=>{
           const q1 = query(userDataRef,where('uid','==',`${currentUser.uid}`))
@@ -37,7 +37,7 @@ function Sidebar (){
         setAB(true)
     }
     const handleAdd2= async() =>{
-        const id = userBoards.length;
+        const id = Math.floor(Date.now() / 1000);
         let temp = userBoards;
         if(userBoards.length < 1){
             temp = [{id:id,cards:[],boardName:newBoardName}]
@@ -52,10 +52,24 @@ function Sidebar (){
         setAB(false)
     }
     const handleBoardView = (board) =>{
-        localStorage.setItem('currentBoard', JSON.stringify(board));
         setCurrentBoard(board)
     }
 
+    const closeBoard = async(board) =>{
+        let temp = userBoards;
+        for(let i=0;i<temp.length;i++){
+            if(board.id == temp[i].id){
+                temp.splice(i,1);
+            }
+        }
+        await updateDoc(doc(db, "userData", currentUser.uid), {
+            "boards" : temp
+        })
+        setBoards(temp)
+        if(temp[0]){
+            setCurrentBoard(temp[0])
+        }
+    }
     return(
         <div className="sidebar">
             {/* <div className='popUp' style={{visibility:`${popUpVis}`}} onClick={()=>{setPUV('hidden')}}>
@@ -82,7 +96,9 @@ function Sidebar (){
                     userBoards.map((board)=>(
                             <>
                                 {currentBoard == board && 
-                                    <p onClick={()=>{handleBoardView(board)}} className='curBoard'>{board.boardName}</p>
+                                    <p onClick={()=>{handleBoardView(board)}} className='curBoard'><p>{board.boardName} </p>
+                                        <button onClick={()=>{closeBoard(board)}} className='btn'> 🗑</button>
+                                    </p>
                                 }
                                 {currentBoard != board && 
                                     <p onClick={()=>{handleBoardView(board)}} className='notCurBoard'>{board.boardName}</p>
