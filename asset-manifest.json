@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/kanban_board/static/css/main.a4432080.css",
-    "main.js": "/kanban_board/static/js/main.eb004d27.js",
+    "main.js": "/kanban_board/static/js/main.be593349.js",
     "static/media/icon1.jpg": "/kanban_board/static/media/icon1.48bda00763330ed308d1.jpg",
     "static/media/user.png": "/kanban_board/static/media/user.38b097360cd1024e4462.png",
     "index.html": "/kanban_board/index.html",
     "main.a4432080.css.map": "/kanban_board/static/css/main.a4432080.css.map",
-    "main.eb004d27.js.map": "/kanban_board/static/js/main.eb004d27.js.map"
+    "main.be593349.js.map": "/kanban_board/static/js/main.be593349.js.map"
   },
   "entrypoints": [
     "static/css/main.a4432080.css",
-    "static/js/main.eb004d27.js"
+    "static/js/main.be593349.js"
   ]
 }
