@@ -14,7 +14,7 @@ function App() {
     <BrowserRouter>
       <Routes basename='/kanban_board'>
         <Route element={<Home/>} path='/home'></Route>
-        <Route path="/kanban_board" element={<Register/>}></Route>
+        <Route exact path="/kanban_board" element={<Register/>}></Route>
         <Route  path="/Login" element={<Login/>}></Route>
       </Routes>
     </BrowserRouter>
