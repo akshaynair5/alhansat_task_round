@@ -52,6 +52,7 @@ function Sidebar (){
         })
         setBoards(temp)
         setAB(false)
+        setCurrentBoard(temp[0])
     }
     const handleBoardView = (board) =>{
         setCurrentBoard(board)
