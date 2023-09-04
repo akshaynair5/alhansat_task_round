@@ -10,19 +10,9 @@ import { Navigate } from 'react-router-dom';
 function App() {
 
   const {currentUser} = useContext(Authcontext)
-  const ProtectedRoute = ({children})=>{
-    if(!currentUser){
-      return(
-        <Navigate to="/Login"/>
-      )
-    }
-    return(
-      children
-    )
-  }
   return (
     <BrowserRouter>
-      <Routes>
+      <Routes basename='/kanban_board'>
         <Route element={<Home/>} path='/home'></Route>
         <Route path="/Register" element={<Register/>}></Route>
         <Route  path="/Login" element={<Login/>}></Route>
