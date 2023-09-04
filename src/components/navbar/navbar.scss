@@ -41,3 +41,56 @@
         }
     }
 }
+
+@media only screen and (max-width:768px){
+    .navbar{
+        background-color:#1e1e24;
+        width: 100vw;
+        height: 8vh;
+        display: flex;
+    
+        .btns{
+            text-decoration: none;
+            color: aliceblue;
+            display: flex;
+            width: 30%;
+            height: 5vh;
+            margin-top: 1.5vh;
+            margin-left: 8vh;
+    
+            .btn{
+                text-decoration: none;
+                margin-left: 5vw;
+                background-color: transparent;
+                border: none;
+                color:red;
+                cursor: pointer;
+                padding: 2%;
+                font-size: 1.5vh;
+                font-weight: 600;
+            }
+        }
+        .info{
+            display: flex;
+            height: 100%;
+            width: 35%;
+            margin-left: 15vw;
+            color: aliceblue;
+
+            p{
+                font-size: 1.5vh;
+                width: max-content;
+                height: 100%;
+                text-align: center;
+                margin-top: 2.5vh;
+                margin-right: 2vw;
+            }
+            img{
+                border-radius: 50%;
+                height: 60%;
+                margin-top: 1.5vh;
+                width: 25%;
+            }
+        }
+    }
+}

@@ -7,8 +7,10 @@ import { Authcontext } from '../../contextProvider';
 
 function Sidebar (){
     const [addBoard,setAB] = useState(false);
+    const [windowWidth,setWindowWidth] = useState(window.innerWidth)
     const [newBoardName,setBN] = useState('')
     const userDataRef = collection(db,'userData')
+    const [mobVis,setMobVis] = useState(false)
     const [userBoards,setBoards] = useState([])
     const {currentUser} = useContext(Authcontext)
     const {currentBoard,setCurrentBoard} = useContext(Authcontext)
@@ -70,44 +72,104 @@ function Sidebar (){
             setCurrentBoard(temp[0])
         }
     }
+
+
+    const handleMobVis = () =>{
+        if(mobVis){
+            setMobVis(false)
+        }
+        else{
+            setMobVis(true)
+        }
+    }
     return(
-        <div className="sidebar">
-            {/* <div className='popUp' style={{visibility:`${popUpVis}`}} onClick={()=>{setPUV('hidden')}}>
-                <div className='content'>
-                    <input className='cardTitle' placeholder='List Title (Eg: To Do, Doing etc..)' onChange={(e)=>{setBN(e.target.value)}}></input>
-                    <button className='done' onClick={()=>{handleAdd2()}}>Create</button>
+        <>
+            {
+                windowWidth > 768 &&
+                <div className="sidebar">
+                    {/* <div className='popUp' style={{visibility:`${popUpVis}`}} onClick={()=>{setPUV('hidden')}}>
+                        <div className='content'>
+                            <input className='cardTitle' placeholder='List Title (Eg: To Do, Doing etc..)' onChange={(e)=>{setBN(e.target.value)}}></input>
+                            <button className='done' onClick={()=>{handleAdd2()}}>Create</button>
+                        </div>
+                    </div> */}
+                    <p className='heading'>Your Boards</p>
+                    <button className='Add' onClick={()=>{handleAdd1()}}>Add new board +</button>
+                    <div className='boards'>
+                        {
+                            addBoard && 
+                            <input onChange={(e)=>{setBN(e.target.value)}}   
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleAdd2();
+                                    }
+                                }} 
+                                placeholder='Card Title' type='text'>
+                            </input>
+                        }
+                        { 
+                            userBoards.map((board)=>(
+                                    <>
+                                        {currentBoard == board && 
+                                            <p onClick={()=>{handleBoardView(board)}} className='curBoard'><p>{board.boardName} </p>
+                                                <button onClick={()=>{closeBoard(board)}} className='btn'> 🗑</button>
+                                            </p>
+                                        }
+                                        {currentBoard != board && 
+                                            <p onClick={()=>{handleBoardView(board)}} className='notCurBoard'>{board.boardName}</p>
+                                        }
+                                    </>
+                            ))
+                        }
+                    </div>
                 </div>
-            </div> */}
-            <p className='heading'>Your Boards</p>
-            <button className='Add' onClick={()=>{handleAdd1()}}>Add new board +</button>
-            <div className='boards'>
-                {
-                    addBoard && 
-                    <input onChange={(e)=>{setBN(e.target.value)}}   
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                handleAdd2();
-                            }
-                        }} 
-                        placeholder='Card Title' type='text'>
-                    </input>
-                }
-                { 
-                    userBoards.map((board)=>(
-                            <>
-                                {currentBoard == board && 
-                                    <p onClick={()=>{handleBoardView(board)}} className='curBoard'><p>{board.boardName} </p>
-                                        <button onClick={()=>{closeBoard(board)}} className='btn'> 🗑</button>
-                                    </p>
-                                }
-                                {currentBoard != board && 
-                                    <p onClick={()=>{handleBoardView(board)}} className='notCurBoard'>{board.boardName}</p>
-                                }
-                            </>
-                    ))
-                }
-            </div>
-        </div>
+            }
+            {
+                windowWidth < 768 && !mobVis &&
+                <button className='sideBarBtn' onClick={()=>{handleMobVis()}}>S</button>
+            }
+            {
+                windowWidth < 768 && mobVis && 
+                <div className="sidebarMob">
+                    {/* <div className='popUp' style={{visibility:`${popUpVis}`}} onClick={()=>{setPUV('hidden')}}>
+                        <div className='content'>
+                            <input className='cardTitle' placeholder='List Title (Eg: To Do, Doing etc..)' onChange={(e)=>{setBN(e.target.value)}}></input>
+                            <button className='done' onClick={()=>{handleAdd2()}}>Create</button>
+                        </div>
+                    </div> */}
+                    <button className='sideBarBtn' onClick={()=>{handleMobVis()}}>S</button>
+                    <p className='heading'>Your Boards</p>
+                    <button className='Add' onClick={()=>{handleAdd1()}}>Add new board +</button>
+                    <div className='boards'>
+                        {
+                            addBoard && 
+                            <input onChange={(e)=>{setBN(e.target.value)}}   
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleAdd2();
+                                    }
+                                }} 
+                                placeholder='Card Title' type='text'>
+                            </input>
+                        }
+                        { 
+                            userBoards.map((board)=>(
+                                    <>
+                                        {currentBoard == board && 
+                                            <p onClick={()=>{handleBoardView(board)}} className='curBoard'><p>{board.boardName} </p>
+                                                <button onClick={()=>{closeBoard(board)}} className='btn'> 🗑</button>
+                                            </p>
+                                        }
+                                        {currentBoard != board && 
+                                            <p onClick={()=>{handleBoardView(board)}} className='notCurBoard'>{board.boardName}</p>
+                                        }
+                                    </>
+                            ))
+                        }
+                    </div>
+                </div>
+            }
+        </>
     )
 }
 export default Sidebar
