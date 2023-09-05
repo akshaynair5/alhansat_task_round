@@ -157,7 +157,7 @@ function Sidebar (){
                                     }
                                 }} 
                                 placeholder='Card Title' type='text'
-                                onBlur={handleBlur}
+                                onBlur={handleBlur} autoFocus
                                 >
                             </input>
                         }

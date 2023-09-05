@@ -265,7 +265,7 @@ function Board(){
                                         }
                                     }} 
                                     placeholder='Card Title' type='text'
-                                    onBlur={handleBlur}
+                                    onBlur={handleBlur} autoFocus
                                 >
                                 </input>
                             </div>
@@ -319,7 +319,7 @@ function Board(){
                                                                             }
                                                                         }} 
                                                                         placeholder={`${message.message}`} type='text'
-                                                                        onBlur={handleBlur}
+                                                                        onBlur={handleBlur} autoFocus
                                                                         >
                                                                     </input>
                                                                 </div>
@@ -339,7 +339,7 @@ function Board(){
                                                     }
                                                 }} 
                                                 placeholder='Message Title' type='text'
-                                                onBlur={handleBlur}
+                                                onBlur={handleBlur} autoFocus
                                                 >
                                             </input>
                                         }
