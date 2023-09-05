@@ -75,6 +75,7 @@ function Board(){
         }
         updateChanges(temp);
         setCards(temp)
+        setDummy((dummy)=> dummy + 1)
     }
 
 
@@ -212,15 +213,6 @@ function Board(){
         setCMN()
     }
 
-
-    useEffect(()=>{
-        if(dummy){
-            setDummy(false)
-        }
-        else{
-            setDummy(true)
-        }
-    },[cards])
     const onDragStart = (cardD,cardL) =>{
         setCD(cardD)
     }
@@ -245,6 +237,13 @@ function Board(){
         setDummy((dummy)=> dummy + 1)
     }
 
+    const handleBlur = () =>{
+        setVis(false)
+        setCMN()
+        setCMN()
+        setOptView(false)
+    }
+
     return(
         <div className="board">
             {
@@ -265,7 +264,9 @@ function Board(){
                                             HandleSubmit();
                                         }
                                     }} 
-                                    placeholder='Card Title' type='text'>
+                                    placeholder='Card Title' type='text'
+                                    onBlur={handleBlur}
+                                >
                                 </input>
                             </div>
                         }
@@ -317,7 +318,9 @@ function Board(){
                                                                                 HandleEdit(message,card)
                                                                             }
                                                                         }} 
-                                                                        placeholder={`${message.message}`} type='text'>
+                                                                        placeholder={`${message.message}`} type='text'
+                                                                        onBlur={handleBlur}
+                                                                        >
                                                                     </input>
                                                                 </div>
                                                         }
@@ -335,7 +338,9 @@ function Board(){
                                                         handleAddMessage(card);
                                                     }
                                                 }} 
-                                                placeholder='Message Title' type='text'>
+                                                placeholder='Message Title' type='text'
+                                                onBlur={handleBlur}
+                                                >
                                             </input>
                                         }
                                     </div>

@@ -4,6 +4,14 @@
 }
 body{
   background-color: #92140c;
+  font-family: 'Bruno Ace SC', cursive;
+  font-family: 'Dancing Script', cursive;
+  font-family: 'Dosis', sans-serif;
+  font-family: 'Golos Text', sans-serif;
+  font-family: 'Montserrat', sans-serif;
+  font-family: 'Open Sans', sans-serif;
+  font-family: 'Raleway', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .App-logo {

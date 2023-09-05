@@ -83,6 +83,10 @@ function Sidebar (){
             setMobVis(true)
         }
     }
+
+    const handleBlur = ()=>{
+        setAB(false)
+    }
     return(
         <>
             {
@@ -105,7 +109,9 @@ function Sidebar (){
                                         handleAdd2();
                                     }
                                 }} 
-                                placeholder='Card Title' type='text'>
+                                placeholder='Card Title' type='text'
+                                onBlur={handleBlur}
+                                >
                             </input>
                         }
                         { 
@@ -127,7 +133,7 @@ function Sidebar (){
             }
             {
                 windowWidth < 768 && !mobVis &&
-                <button className='sideBarBtn' onClick={()=>{handleMobVis()}}>S</button>
+                <button className='sideBarBtn' onClick={()=>{handleMobVis()}}>⇛</button>
             }
             {
                 windowWidth < 768 && mobVis && 
@@ -138,7 +144,7 @@ function Sidebar (){
                             <button className='done' onClick={()=>{handleAdd2()}}>Create</button>
                         </div>
                     </div> */}
-                    <button className='sideBarBtn' onClick={()=>{handleMobVis()}}>S</button>
+                    <button className='sideBarBtn' onClick={()=>{handleMobVis()}}>⇚</button>
                     <p className='heading'>Your Boards</p>
                     <button className='Add' onClick={()=>{handleAdd1()}}>Add new board +</button>
                     <div className='boards'>
@@ -150,7 +156,9 @@ function Sidebar (){
                                         handleAdd2();
                                     }
                                 }} 
-                                placeholder='Card Title' type='text'>
+                                placeholder='Card Title' type='text'
+                                onBlur={handleBlur}
+                                >
                             </input>
                         }
                         { 
