@@ -8,6 +8,7 @@ Taking inspiration from suggested website and trello I have created an efficient
   c)messages
 3)Each board can store several cards onto which we can store the messages/tasks. The position of these cards can be changed for convienience while working by dragging and droping them to the desired position.
 4)A user is given with the ability to create new boards and also delete them after use. They can also add as many cards within each board as well, which can also be deleted after use. Users can also add messages to their cards and edit, delete these messages, In addition to that these, messages can also be moved from one card to the another card.
+5)Here I have used firebase as my database where I have stored the user information made use of firebase storage, authentication and firestore database to store information like the usual user creadentials and profile information as well as the various boards, cards and messages of each user which are updated immediately upon changes made by the user.
 
 Functionality and UI screenshots
 
