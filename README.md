@@ -1,4 +1,4 @@
-#   Alhansat task round - kanban board
+kanban board
 Taking inspiration from suggested website and trello I have created an efficient fast and easy to use website to maintain, monitor and arrange day to day tasks
 
 1)Initially users are directed to create an account and enter the necessary details after which they are redirected to the home page.
